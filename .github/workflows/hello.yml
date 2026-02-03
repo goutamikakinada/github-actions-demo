@@ -1,9 +1,20 @@
-steps:
-  - name: Show OS details
-    run: uname -a
+name: First GitHub Action
 
-  - name: Show date
-    run: date
+on:
+  push:
+    branches:
+      - main
 
-  - name: List files
-    run: ls -la
+jobs:
+  demo-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show OS details
+        run: uname -a
+
+      - name: Show date
+        run: date
+
+      - name: List files
+        run: ls -la
