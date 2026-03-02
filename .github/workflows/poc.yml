@@ -1,0 +1,46 @@
+name: Medium Level CI/CD PoC
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
+
+  docker-build:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: docker build -t node-poc-app .
+
+  deploy:
+    needs: docker-build
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stop Old Container
+        run: docker rm -f node-poc || true
+
+      - name: Build Image
+        run: docker build -t node-poc-app .
+
+      - name: Run Container
+        run: docker run -d -p 3000:3000 --name node-poc node-poc-app
